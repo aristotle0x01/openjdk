@@ -1,9 +1,11 @@
-DIR_JAVA := /var/shared/8b120/build/linux-x86_64-normal-server-slowdebug/jdk/bin
+DIR_JAVA := /var/shared/openjdk/build/linux-x86_64-normal-server-slowdebug/jdk/bin
 
 AddressTest.class: AddressTest.java
-	$(DIR_JAVA)/javac -cp ".:jol-core-0.17.jar" AddressTest.java
+	# -cp ".:jol-core-0.17.jar"
+	$(DIR_JAVA)/javac  AddressTest.java
 r: AddressTest.class
-	# -XX:+PrintInterpreter
-	$(DIR_JAVA)/java -cp ".:jol-core-0.17.jar" -Xint -XX:-UseCompressedOops -XX:+UnlockDiagnosticVMOptions AddressTest
+	$(DIR_JAVA)/java AddressTest
+ri: AddressTest.class
+	$(DIR_JAVA)/java -cp ".:jol-core-0.17.jar" -Xint -XX:-UseCompressedOops -XX:+UnlockDiagnosticVMOptions -XX:+PrintInterpreter  AddressTest
 d:
 	rm -f AddressTest.class

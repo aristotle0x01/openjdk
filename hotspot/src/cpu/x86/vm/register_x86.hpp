@@ -22,6 +22,10 @@
  *
  */
 
+// x86-64 VS amd64
+// almost the same, synonym here in java ecosystem
+// https://en.wikipedia.org/wiki/X86-64#Industry_naming_conventions
+
 #ifndef CPU_X86_VM_REGISTER_X86_HPP
 #define CPU_X86_VM_REGISTER_X86_HPP
 

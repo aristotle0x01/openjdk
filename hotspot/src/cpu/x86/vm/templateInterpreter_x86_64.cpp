@@ -1416,6 +1416,8 @@ address InterpreterGenerator::generate_normal_entry(bool synchronized) {
 
 
   // get parameter size (always needed)
+  // note: rdx as a local var set here kind of violate intuition, but not set 
+  //  before size_of_parameters. It is tested ok to move "__ movptr(rdx, constMethod)" before size_of_parameters
   __ movptr(rdx, constMethod);
   __ load_unsigned_short(rcx, size_of_parameters);
 

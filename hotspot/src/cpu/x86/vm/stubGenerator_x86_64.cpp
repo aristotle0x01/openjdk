@@ -222,8 +222,10 @@ class StubGenerator: public StubCodeGenerator {
     address start = __ pc();
 
     // same as in generate_catch_exception()!
-    const Address rsp_after_call(rbp, rsp_after_call_off * wordSize);
+    const Address rsp_after_call(rbp, rsp_after_call_off * wordSize); 
 
+    // rbp： CONSTANT_REGISTER_DECLARATION(Register, rbp,    (5))
+    // class Address: hotspot/src/cpu/x86/vm/assembler_x86.hpp
     const Address call_wrapper  (rbp, call_wrapper_off   * wordSize);
     const Address result        (rbp, result_off         * wordSize);
     const Address result_type   (rbp, result_type_off    * wordSize);
@@ -251,6 +253,7 @@ class StubGenerator: public StubCodeGenerator {
     __ movptr(entry_point,  c_rarg4); // entry_point
 #endif
 
+    // c_rarg3：REGISTER_DECLARATION(Register, c_rarg3, rcx);
     __ movptr(method,       c_rarg3); // method
     __ movl(result_type,  c_rarg2);   // result type
     __ movptr(result,       c_rarg1); // result
