@@ -2121,6 +2121,10 @@ void TemplateTable::resolve_cache_and_index(int byte_no,
   Label resolved;
     assert(byte_no == f1_byte || byte_no == f2_byte, "byte_no out of range");
     __ get_cache_and_index_and_bytecode_at_bcp(Rcache, index, temp, byte_no, 1, index_size);
+    // ref: hotspot/src/share/vm/oops/cpCache.hpp
+    // temp is from ConstantPoolCache -> ConstantPoolCacheEntry -> _indices
+    // after first time InterpreterRuntime::resolve_invoke called, b1 field will be set to bytecode()
+    // _indices   [ b2 | b1 |  index  ]  index = constant_pool_index
     __ cmpl(temp, (int) bytecode());  // have we resolved this bytecode?
     __ jcc(Assembler::equal, resolved);
 
@@ -2202,6 +2206,12 @@ void TemplateTable::load_invoke_cp_cache_entry(int byte_no,
   assert_different_registers(itable_index, cache, index);
   // determine constant pool cache field offsets
   assert(is_invokevirtual == (byte_no == f2_byte), "is_invokevirtual flag redundant");
+  // it's wierd to give *_offset in advance to facilitate Register method and flags calculation this way
+  // ConstantPoolCache allocate uses placement new semantics, for an instance of ConstantPoolCache,
+  // after its own members is a ConstantPoolCacheEntry array
+  // so __ movptr(method, Address(cache, index, Address::times_ptr, method_offset)) is ok, since at last 
+  // method_offset will be subtracted away, which is exactly just one ConstantPoolCache::base_offset() and 
+  // one ConstantPoolCacheEntry::f*_offset()
   const int method_offset = in_bytes(
     ConstantPoolCache::base_offset() +
       ((byte_no == f2_byte)
@@ -3081,6 +3091,7 @@ void TemplateTable::invokespecial(int byte_no) {
 void TemplateTable::invokestatic(int byte_no) {
   transition(vtos, vtos);
   assert(byte_no == f1_byte, "use this argument");
+  // rbx as a pointer to receive Method*
   prepare_invoke(byte_no, rbx);  // get f1 Method*
   // do the call
   __ profile_call(rax);

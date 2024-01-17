@@ -1439,6 +1439,14 @@ address InterpreterGenerator::generate_normal_entry(bool synchronized) {
   __ pop(rax);
 
   // compute beginning of parameters (r14)
+  // ref: stubGenerator_x86_64.cpp
+  //     [ return_from_Java     ] <--- rsp
+  //     [ argument word n      ]
+  //      ...
+  // -12 [ argument word 1      ]
+  // -11 [ saved r15            ] <--- rsp_after_call
+  // 
+  // lea    -0x8(%rsp,%rcx,8),%r14
   __ lea(r14, Address(rsp, rcx, Address::times_8, -wordSize));
 
   // rdx - # of additional locals
