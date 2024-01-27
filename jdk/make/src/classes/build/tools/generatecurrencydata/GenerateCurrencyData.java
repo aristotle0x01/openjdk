@@ -281,7 +281,9 @@ public class GenerateCurrencyData {
             checkCurrencyCode(newCurrency);
             String timeString = currencyInfo.substring(4, length - 4);
             long time = format.parse(timeString).getTime();
-            if (Math.abs(time - System.currentTimeMillis()) > ((long) 10) * 365 * 24 * 60 * 60 * 1000) {
+            // 10 -> 100 to fix build Error: time is more than 10 years from present: 1388527200000
+            // https://blog.csdn.net/u012557298/article/details/135716675
+            if (Math.abs(time - System.currentTimeMillis()) > ((long) 100) * 365 * 24 * 60 * 60 * 1000) {
                 throw new RuntimeException("time is more than 10 years from present: " + time);
             }
             specialCaseCutOverTimes[specialCaseCount] = time;
