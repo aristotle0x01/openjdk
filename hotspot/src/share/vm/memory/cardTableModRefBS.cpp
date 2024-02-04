@@ -87,6 +87,8 @@ CardTableModRefBS::CardTableModRefBS(MemRegion whole_heap,
   _cur_covered_regions = 0;
   const size_t rs_align = _page_size == (size_t) os::vm_page_size() ? 0 :
     MAX2(_page_size, (size_t) os::vm_allocation_granularity());
+  // _byte_map_size is almost equals to total heap size in bytes divided by 512
+  // which is the number of cards in the heap
   ReservedSpace heap_rs(_byte_map_size, rs_align, false);
 
   MemTracker::record_virtual_memory_type((address)heap_rs.base(), mtGC);
@@ -103,6 +105,12 @@ CardTableModRefBS::CardTableModRefBS(MemRegion whole_heap,
   //
   //   _byte_map = byte_map_base + (uintptr_t(low_bound) >> card_shift)
   _byte_map = (jbyte*) heap_rs.base();
+  // upon first sight, byte_map_base would fall into unspecified mem range, which is wierd
+  // but actually mem in this range would not be acessed at least through byte_map_base
+  // if you check the byte_for and addr_for use cases. this is just a convinient way of 
+  // accessing the byte_map, since you just subtracted low_bound beforehand, if not, then you 
+  // have to use byte_map[(uintptr_t(p)-uintptr_t(low_bound)) >> card_shift] instead of 
+  // byte_map_base[uintptr_t(p) >> card_shift], awkward
   byte_map_base = _byte_map - (uintptr_t(low_bound) >> card_shift);
   assert(byte_for(low_bound) == &_byte_map[0], "Checking start of map");
   assert(byte_for(high_bound-1) <= &_byte_map[_last_valid_index], "Checking end of map");

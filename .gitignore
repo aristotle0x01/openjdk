@@ -26,3 +26,6 @@ NashornProfile.txt
 /.cproject
 /compile_commands.json
 /.cache
+
+# to avoid version control of soft link: openjdk -> /Users/xiaofei/repo/openjdk
+openjdk

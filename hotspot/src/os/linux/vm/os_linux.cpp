@@ -3117,6 +3117,11 @@ static char* anon_mmap(char* requested_addr, size_t bytes, bool fixed) {
     flags |= MAP_FIXED;
   }
 
+  // https://en.wikipedia.org/wiki/Mmap
+  // Anonymous mapping maps an area of the process's virtual memory not backed by any file. 
+  // The contents are initialized to zero.[3] In this respect an anonymous mapping is similar 
+  // to malloc, and is used in some malloc implementations for certain allocations, particularly large ones
+
   // Map reserved/uncommitted pages PROT_NONE so we fail early if we
   // touch an uncommitted page. Otherwise, the read/write might
   // succeed if we have enough swap space to back the physical page.
