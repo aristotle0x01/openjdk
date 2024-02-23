@@ -809,6 +809,12 @@ oop DefNewGeneration::copy_to_survivor_space(oop old) {
     age_table()->add(obj, s);
   }
 
+  // When an object is moved by the garbage collector, the new object address, 
+  // called the forward pointer, is also stored in the mark word. If the hash code 
+  // bits are used, they are rescued before they are overwritten
+  // https://ssw.jku.at/Research/Papers/Wuerthinger11PhD/Wuerthinger11PhD.pdf
+  // Figure 2.9: The mark-and-compact garbage collection algorithm p24
+
   // Done, insert forward pointer to obj in this header
   old->forward_to(obj);
 
