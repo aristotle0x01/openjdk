@@ -49,3 +49,9 @@
 
 <img src="https://github.com/aristotle0x01/openjdk/assets/2216435/617fce5a-9ddf-4751-9ee5-bf2a4fe992e0" alt="forward pointer" style="zoom:60%; float: left;" />
 
+
+
+**Q**: 如何抵达safepoint？
+
+**A**: [More JVM Signal tricks - Thread control via mprotect](https://jcdav.is/2015/11/09/More-JVM-Signal-Tricks/)
+
